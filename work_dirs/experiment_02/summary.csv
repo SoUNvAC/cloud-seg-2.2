@@ -1,0 +1,1 @@
+model,config,split,seed,mIoU,clear_iou,thick_cloud_iou,thin_cloud_iou,cloud_shadow_iou,macro_boundary_f1,thin_cloud_boundary_f1,cloud_shadow_boundary_f1,checkpoint

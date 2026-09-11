@@ -1,0 +1,18 @@
+{
+  "status": "not_run",
+  "hardware": null,
+  "reference": {
+    "adapter_trainable_params": null,
+    "forward_flops": null,
+    "median_latency_ms": null,
+    "p90_latency_ms": null,
+    "peak_allocated_memory_mb": null
+  },
+  "frequency_routed": {
+    "adapter_trainable_params": null,
+    "forward_flops": null,
+    "median_latency_ms": null,
+    "p90_latency_ms": null,
+    "peak_allocated_memory_mb": null
+  }
+}
