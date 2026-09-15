@@ -24,6 +24,8 @@ pytest -q tests
 
 `setup.sh` 会创建或补全名为 `ca22` 的环境，安装 PyTorch 2.0.1 + CUDA 11.8、MMCV 2.1.0、MMSegmentation 1.2.2、MMDetection 3.3.0 以及测试和数据处理依赖。正式训练前必须确保全部测试通过；任何失败都不应启动 40k 训练。
 
+`xformers` 是可选加速库，不是本实验的必需依赖；未安装时 DINOv2/EVA 会自动使用 PyTorch attention。日志中的 `xFormers is not available` 警告可以忽略，但不应再出现 `ModuleNotFoundError` 中止训练。
+
 ## 数据与预训练权重
 
 CloudSEN12_High_L1C 按以下结构放置：
