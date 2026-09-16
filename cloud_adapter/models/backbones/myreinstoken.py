@@ -6,7 +6,6 @@ import math
 from functools import reduce
 from operator import mul
 from torch import Tensor
-from thop import profile,clever_format
 
 class TokenLayer(nn.Module):
     def __init__(
