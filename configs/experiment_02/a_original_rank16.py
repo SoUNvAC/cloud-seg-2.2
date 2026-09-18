@@ -8,7 +8,7 @@ val_dataloader = dict(
 randomness = dict(seed=42)
 model = dict(
     decode_head=dict(
-        train_cfg=dict(assigner=dict(type="StableHungarianAssigner"))
+        train_cfg=dict(assigner=dict(type="mmdet.StableHungarianAssigner"))
     )
 )
 optim_wrapper = dict(type="AmpOptimWrapper", loss_scale="dynamic")
