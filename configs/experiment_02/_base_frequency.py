@@ -9,6 +9,9 @@ val_dataloader = dict(
 
 model = dict(
     type="FrequencyRoutedEncoderDecoder",
+    decode_head=dict(
+        train_cfg=dict(assigner=dict(type="StableHungarianAssigner"))
+    ),
     backbone=dict(
         cloud_adapter_config=dict(
             int_type="frequency_routed",

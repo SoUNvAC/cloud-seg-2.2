@@ -6,6 +6,11 @@ val_dataloader = dict(
     )
 )
 randomness = dict(seed=42)
+model = dict(
+    decode_head=dict(
+        train_cfg=dict(assigner=dict(type="StableHungarianAssigner"))
+    )
+)
 optim_wrapper = dict(type="AmpOptimWrapper", loss_scale="dynamic")
 log_processor = dict(window_size=50, by_epoch=False)
 default_hooks = dict(

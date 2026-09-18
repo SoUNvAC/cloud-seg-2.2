@@ -58,6 +58,8 @@ CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/experiment_02/e_token_balan
 
 实验配置默认启用动态 loss scale 的 FP16 AMP，并对 DINOv2 与三专家注意力使用 PyTorch SDPA；支持的 NVIDIA GPU 会自动进入 Flash/Memory-Efficient Attention 路径，不再显式保存完整 attention 矩阵。标准损失每 50 iter 输出一次，另有 `[train-detail]` 行显示 allocated/reserved/peak 显存、学习率、专家使用率、Router entropy 和塌缩层数。无需再额外传 `--amp`。
 
+Mask2Former 的 Hungarian matching 固定使用 detached FP32 cost，避免 FP16 cost 溢出导致 SciPy 报 `cost matrix is infeasible`。如果上游预测本身出现瞬时 `NaN/Inf`，只会在 matcher 副本中替换为有限惩罚；原始 loss 仍由动态 GradScaler 检测和处理。
+
 若 24GB 显卡仍在首个 iteration OOM，可临时降低单卡 batch（会改变实验口径，仅用于排障）：
 
 ```bash
