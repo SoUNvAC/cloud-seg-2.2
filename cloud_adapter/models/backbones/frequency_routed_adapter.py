@@ -104,7 +104,6 @@ class SharedQueryMultiExpertCrossAttention(nn.Module):
         self.heads = heads
         self.dim_head = dim_head
         self.inner_dim = heads * dim_head
-        self.scale = dim_head**-0.5
         self.to_q = LowRankLinear(query_dim, self.inner_dim, sum(ranks))
         self.to_k = nn.ModuleDict(
             {
@@ -140,9 +139,11 @@ class SharedQueryMultiExpertCrossAttention(nn.Module):
         for name, context in zip(self.expert_names, contexts):
             k = self._split_heads(self.to_k[name](context))
             v = self._split_heads(self.to_v[name](context))
-            attention = torch.matmul(q, k.transpose(-2, -1)) * self.scale
-            attention = attention.softmax(dim=-1)
-            delta = torch.matmul(attention, v).transpose(1, 2).contiguous()
+            # SDPA selects Flash/Memory-Efficient Attention on supported CUDA
+            # devices and avoids materializing a B*H*N*N probability tensor.
+            delta = F.scaled_dot_product_attention(
+                q, k, v, dropout_p=0.0, is_causal=False
+            ).transpose(1, 2).contiguous()
             delta = delta.reshape(x.shape[0], x.shape[1], self.inner_dim)
             outputs.append(self.to_out[name](delta))
         return torch.stack(outputs, dim=2)  # B, N, 3, D

@@ -56,6 +56,17 @@ python tools/convert_models/convert_dinov2.py INPUT.pth checkpoints/dinov2_conve
 CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/experiment_02/e_token_balance_844.py
 ```
 
+实验配置默认启用动态 loss scale 的 FP16 AMP，并对 DINOv2 与三专家注意力使用 PyTorch SDPA；支持的 NVIDIA GPU 会自动进入 Flash/Memory-Efficient Attention 路径，不再显式保存完整 attention 矩阵。标准损失每 50 iter 输出一次，另有 `[train-detail]` 行显示 allocated/reserved/peak 显存、学习率、专家使用率、Router entropy 和塌缩层数。无需再额外传 `--amp`。
+
+若 24GB 显卡仍在首个 iteration OOM，可临时降低单卡 batch（会改变实验口径，仅用于排障）：
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python tools/train.py configs/experiment_02/e_token_balance_844.py \
+  --cfg-options train_dataloader.batch_size=2
+```
+
+正式 A–G 对比必须恢复相同 batch 设置，不能把不同 batch 的结果直接比较。
+
 其他配置为 `a_original_rank16.py`、`b_static_844.py`、`c_image_router_844.py`、`d_token_router_844.py`、`f_token_balance_655.py`、`g_token_balance_466.py`；`e_token_balance_844_lambda_0_01.py` 用于 balance 权重 0.01，D 配置对应权重 0。按 validation mIoU 选择最佳 token-wise 配置后，用完全相同设置运行三个配对种子：
 
 ```bash

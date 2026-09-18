@@ -6,6 +6,12 @@ val_dataloader = dict(
     )
 )
 randomness = dict(seed=42)
+optim_wrapper = dict(type="AmpOptimWrapper", loss_scale="dynamic")
+log_processor = dict(window_size=50, by_epoch=False)
+default_hooks = dict(
+    logger=dict(type="LoggerHook", interval=50, log_metric_by_epoch=False)
+)
+custom_hooks = [dict(type="TrainingDiagnosticsHook", interval=50)]
 val_evaluator = [
     dict(type="IoUMetric", iou_metrics=["mIoU", "mDice", "mFscore"]),
     dict(type="BoundaryF1Metric", tolerance=3),
